@@ -1,0 +1,19 @@
+<% database_name = application_config["postgresql_database_name_prefix"] unless application_config["postgresql_database_name_prefix"].nil?
+   database_name = application.gsub("-", "_") if database_name.nil? %>
+development:
+  adapter: postgresql
+  database: <%= database_name %>_development
+  pool: 5
+  timeout: 5000
+
+test:
+  adapter: postgresql
+  database: <%= database_name %>_test
+  pool: 5
+  timeout: 5000
+
+production:
+  adapter: postgresql
+  database: <%= database_name %>_production
+  pool: 5
+  timeout: 5000

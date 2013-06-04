@@ -1,0 +1,60 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:             <%= application.gsub("-", "_") %>
+# Required-Start:       $local_fs $remote_fs $network $time <%= additional_required_start.join(" ") %>
+# Required-Stop:        $local_fs $remote_fs $network $time <%= additional_required_stop.join(" ") %>
+# Should-Start:         $syslog postgresql
+# Should-Stop:          $syslog
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+<% if short_description %>
+# Short-Description:    <%= short_description %>
+<% end %>
+<% if description %>
+# Description:          <%= description %>
+<% end %>
+### END INIT INFO
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=<%= application.gsub("-", "_") %>
+HUMANNAME=<%= application_human_name %>
+DESC="application"
+BLUEPILL_CALL="bundle exec bluepill"
+export RAILS_ENV=<%= rails_env %>
+
+execute_bluepill()
+{
+    `<%= File.join(rvm_path, "/bin/rvm-shell") %> <%= rvm_ruby_string_evaluated %> -c "$BLUEPILL_COMMAND"`
+}
+
+case "$1" in
+    start)
+        echo "Starting $DESC $HUMANNAME"
+	COMMAND="load config/$NAME.pill"
+	BLUEPILL_COMMAND="$BLUEPILL_CALL $COMMAND"
+	cd <%= current_path %>;
+	execute_bluepill;
+        ;;
+
+    stop)
+        echo "Stopping $DESC $HUMANNAME";
+	COMMAND1="$NAME stop"
+	BLUEPILL_COMMAND1="$BLUEPILL_CALL $COMMAND1"
+	COMMAND2="$NAME quit"
+	BLUEPILL_COMMAND2="$BLUEPILL_CALL $COMMAND2"
+	BLUEPILL_COMMAND="$BLUEPILL_COMMAND1 && $BLUEPILL_COMMAND2"
+	cd <%= current_path %>;
+	execute_bluepill;
+        ;;
+
+    restart)
+        $0 stop;
+        $0 start;
+        ;;
+    *)
+        echo "Usage: $SCRIPTNAME {start|stop|restart}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0
