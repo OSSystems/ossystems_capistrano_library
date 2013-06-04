@@ -180,9 +180,12 @@ Capistrano::Configuration.instance(:must_exist).load do
       deploy.setup
       deploy.add_user
       deploy.fix_permissions
-      deploy.update
+      disable_mo_files_generation do
+        deploy.update
+      end
       deploy.generate_secret_token if set_default_deploy_actions
       deploy.first_code_deployed
+      deploy.update_mo_files
       deploy.start
     end
 
@@ -295,6 +298,18 @@ Capistrano::Configuration.instance(:must_exist).load do
     return
   end
   set_server_info
+
+  def disable_mo_files_generation
+    previous_value = application_config["use_gettext_as_i18n"]
+    application_config["use_gettext_as_i18n"] = false
+    return_value = nil
+    begin
+      return_value = yield
+    ensure
+      application_config["use_gettext_as_i18n"] = previous_value
+    end
+    return_value
+  end
 
   require "recipes/rvm"
   require "recipes/git"
