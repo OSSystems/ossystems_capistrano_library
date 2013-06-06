@@ -25,5 +25,5 @@ Capistrano::Configuration.instance(:must_exist).load do
   before 'deploy:setup', 'rvm:install_rvm'
   after 'rvm:install_rvm', 'rvm:close_sessions' # restart sessions to avoid permission bugs
   before 'deploy:setup', 'rvm:install_ruby' # install Ruby and create gemset for the first time
-  before 'bundle:install', 'rvm:install_ruby' # in case an update changes the installed ruby
+  before 'deploy:update', 'rvm:install_ruby' # in case an update changes the installed ruby
 end
