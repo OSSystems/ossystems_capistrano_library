@@ -17,9 +17,11 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
   end
 
-  def rvmsudo(command, rvmsudo_user=nil)
-    rvmsudo_user = rvmsudo_user.nil? ? "" : "-u #{rvmsudo_user} "
-    run "rvm#{sudo} #{rvmsudo_user} bash -c 'cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec #{command}'"
+  def rvmsudo(command, options={})
+    rvmsudo_user = options[:user].nil? ? "" : "-u #{options[:user]} "
+    path = (options[:path] or current_path)
+    env_vars = (options[:env_vars] or "")
+    run "rvm#{sudo} #{rvmsudo_user} bash -c 'cd #{path} && RAILS_ENV=#{rails_env} #{env_vars} bundle exec #{command}'"
   end
 
   before 'deploy:setup', 'rvm:install_rvm'

@@ -181,7 +181,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       deploy.add_user
       deploy.fix_permissions
       disable_mo_files_generation do
-        deploy.update
+        disable_assets_generation do
+          deploy.update
+        end
       end
       deploy.generate_secret_token if set_default_deploy_actions
       deploy.first_code_deployed
@@ -299,14 +301,22 @@ Capistrano::Configuration.instance(:must_exist).load do
   end
   set_server_info
 
-  def disable_mo_files_generation
-    previous_value = application_config["use_gettext_as_i18n"]
-    application_config["use_gettext_as_i18n"] = false
+  def disable_mo_files_generation(&block)
+    temporarily_disable_config("use_gettext_as_i18n", &block)
+  end
+
+  def disable_assets_generation(&block)
+    temporarily_disable_config("should_deploy_assets", &block)
+  end
+
+  def temporarily_disable_config(config)
+    previous_value = application_config[config]
+    application_config[config] = false
     return_value = nil
     begin
       return_value = yield
     ensure
-      application_config["use_gettext_as_i18n"] = previous_value
+      application_config[config] = previous_value
     end
     return_value
   end
@@ -317,4 +327,5 @@ Capistrano::Configuration.instance(:must_exist).load do
   require "recipes/logrotate"
   require "recipes/database"
   require "recipes/nginx"
+  require "recipes/assets"
 end

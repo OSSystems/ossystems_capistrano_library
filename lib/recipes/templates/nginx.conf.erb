@@ -63,6 +63,21 @@ server {
       }
     }
 
+    location ~ ^/(assets)/ {
+        gzip_static on;
+        expires 1y;
+        add_header Cache-Control public;
+        add_header ETag "";
+        break;
+    }
+
+    location = /favicon.ico {
+        expires 1y;
+        add_header Cache-Control public;
+        add_header ETag "";
+        break;
+    }
+
     # Rails error pages
     error_page 500 502 503 504 /500.html;
     location = /500.html {

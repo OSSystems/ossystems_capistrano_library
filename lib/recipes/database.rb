@@ -42,16 +42,18 @@ Capistrano::Configuration.instance(:must_exist).load do
     desc "Load the schema into the database"
     task :schema_load do
       prepare_logs_for_migration do
-        sudo_command_user = database == "postgresql" ? "postgres" : nil
-        rvmsudo "rake db:schema:load", sudo_command_user
+        options = {}
+        options[:user] = "postgres" if database == "postgresql"
+        rvmsudo "rake db:schema:load", options
       end
     end
 
     desc "Run the migrate rake task"
     task :migrate do
       prepare_logs_for_migration do
-        sudo_command_user = "-u postgres" if database == "postgresql"
-        run "rvm#{sudo} #{sudo_command_user} bash -c 'cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec rake db:migrate'"
+        options = {}
+        options[:user] = "postgres" if database == "postgresql"
+        rvmsudo "rake db:migrate", options
       end
     end
 
@@ -108,13 +110,14 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     desc "Creates the database"
     task :create do
-      command_user = (database == "postgresql" ? "postgres" : nil)
-      rvmsudo "rake db:create", command_user
+      options = {}
+      options[:user] = "postgres" if database == "postgresql"
+      rvmsudo "rake db:create", options
     end
 
     desc "Seeds the database with initial data"
     task :seed do
-      rvmsudo "rake db:seed", application_user
+      rvmsudo "rake db:seed", {:user => application_user}
     end
 
     desc "Set table permissions for the application user"
