@@ -91,6 +91,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :application, application_config["name"]
   set :application_user, application_config["user"]
   set :application_port, application_config["port"] || 80
+  set :ssh_port, application_config["ssh_port"] || 22
   set :set_default_deploy_actions, application_config["set_default_deploy_actions"].nil? ? true : application_config["set_default_deploy_actions"]
   set :deploy_to, File.join("/srv/", application)
   set :rails_env, "production"
@@ -291,7 +292,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   def set_server_info
     message = "Server hostname/address: "
     invalid_message = "Invalid server hostname/address."
-    server ENV["SERVER"] || application_config["server"] || ask_info(message, invalid_message), :web,  :app, :db, :primary => true
+    server ENV["SERVER"] || application_config["server"] || ask_info(message, invalid_message), :web,  :app, :db, :primary => true, :port => ssh_port
 
     message = "Server username with sudo or root: "
     invalid_message = "Invalid server username.\n\n"
