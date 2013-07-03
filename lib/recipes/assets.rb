@@ -68,6 +68,8 @@ Capistrano::Configuration.instance(:must_exist).load do
       task :precompile, :roles => lambda { assets_role }, :except => { :no_release => true } do
         should_deploy_assets = application_config["should_deploy_assets"].nil? ? true : application_config["should_deploy_assets"]
         if should_deploy_assets
+          sudo "chown -R #{user}:#{application_user} #{shared_path}/#{assets_prefix}"
+          sudo "chmod -R g+w #{shared_path}/#{assets_prefix}"
           sudo "chown -R #{user}:#{application_user} #{latest_release}/public/#{assets_prefix}"
           sudo "chmod -R g+w #{latest_release}/public/#{assets_prefix}"
           rvmsudo "#{rake} assets:precompile", {:user => application_user, :path => latest_release, :env_vars => asset_env}

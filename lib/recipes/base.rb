@@ -117,7 +117,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   # Hooks
   before 'deploy:setup', "deploy:dependencies"
   after "deploy:update", "deploy:fix_permissions"
-  after "deploy:update", "deploy:copy_basic_config_file"
+  after "deploy:update_code", "deploy:copy_basic_config_file"
   after "deploy:update", "deploy:cleanup"
   after "deploy:update", "deploy:update_mo_files"
 
@@ -195,7 +195,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     desc "Copies the basic config file to the server."
     task :copy_basic_config_file do
       config_buffer = application_config.to_yaml
-      config_filepath = File.join(current_path, "config/basic_config.yml")
+      config_filepath = File.join(latest_release, "config/basic_config.yml")
       put config_buffer, config_filepath
     end
 
