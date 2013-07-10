@@ -98,6 +98,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :templates_path, File.expand_path(__FILE__ + "/../templates")
   set(:override_templates_path) { application_config["orverride_templates_dir"] }
   set :optional_dependencies, Array(application_config["optional_dependencies"])
+  set :require_assets, application_config["require_assets"].nil? ? true : application_config["require_assets"]
 
   set :tmp_sockets, "tmp/sockets"
 
@@ -328,5 +329,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   require "recipes/logrotate"
   require "recipes/database"
   require "recipes/nginx"
-  require "recipes/assets"
+  if require_assets
+    require "recipes/assets"
+  end
 end
