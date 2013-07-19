@@ -324,7 +324,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   end
 
   require "recipes/rvm"
-  require "recipes/git"
+  require "recipes/code"
   require "recipes/init.d"
   require "recipes/logrotate"
   require "recipes/database"
