@@ -96,7 +96,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   set :deploy_to, File.join("/srv/", application)
   set :rails_env, "production"
   set :templates_path, File.expand_path(__FILE__ + "/../templates")
-  set(:override_templates_path) { application_config["orverride_templates_dir"] }
+  set(:override_templates_path) { application_config["override_templates_dir"] }
   set :optional_dependencies, Array(application_config["optional_dependencies"])
   set :require_assets, application_config["require_assets"].nil? ? true : application_config["require_assets"]
 
