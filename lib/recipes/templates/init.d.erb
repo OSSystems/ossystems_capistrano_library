@@ -16,15 +16,16 @@
 ### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-NAME=<%= application.gsub("-", "_") %>
-HUMANNAME=<%= application_human_name %>
+NAME="<%= application.gsub("-", "_") %>"
+HUMANNAME="<%= application_human_name %>"
 DESC="application"
 BLUEPILL_CALL="bundle exec bluepill"
 export RAILS_ENV=<%= rails_env %>
 
 execute_bluepill()
 {
-    `<%= File.join(rvm_path, "/bin/rvm-shell") %> <%= rvm_ruby_string_evaluated %> -c "$BLUEPILL_COMMAND"`
+    RVM_CURRENT_GEMSET=`<%= File.join(rvm_path, "/bin/rvm-shell") %> -C rvm current`
+    `<%= File.join(rvm_path, "/bin/rvm-shell") %> "$RVM_CURRENT_GEMSET" -c "$BLUEPILL_COMMAND"`
 }
 
 case "$1" in
