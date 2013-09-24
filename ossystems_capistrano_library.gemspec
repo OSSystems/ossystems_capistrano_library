@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = OssystemsCapistranoLibrary::VERSION
   gem.authors       = ["Lucas Dutra Nunes"]
   gem.email         = ["ldnunes@ossystems.com.br"]
-  gem.description   = %q{Capistrano deploy recipes for O.S. System Rails projects}
-  gem.summary       = %q{Customizable Capistrano deploy recipes for O.S. System Rails projects.}
+  gem.description   = %q{Capistrano deploy recipes for O.S. Systems Rails projects}
+  gem.summary       = %q{Customizable Capistrano deploy recipes for O.S. Systems Rails projects.}
   gem.homepage      = "http://www.ossystems.com.br/"
 
   gem.files         = `git ls-files`.split($/)
