@@ -2,7 +2,7 @@ lib = File.expand_path('..', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 module OssystemsCapistranoLibrary
-  VERSION = "0.6.4"
+  VERSION = "0.6.5"
 end
 
 # Capistrano::CLI is only loaded when called by the command line. That means the
