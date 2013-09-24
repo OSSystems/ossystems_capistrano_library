@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'ossystems_capistrano_library/version'
+require 'ossystems_capistrano_library'
 
 Gem::Specification.new do |gem|
   gem.name          = "ossystems_capistrano_library"
