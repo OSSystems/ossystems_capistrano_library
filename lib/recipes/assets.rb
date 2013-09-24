@@ -32,6 +32,10 @@ Capistrano::Configuration.instance(:must_exist).load do
     assets_hash.to_a.flatten.map {|a| [a, "#{a}.gz"] }.flatten
   end
 
+  if application_config["should_deploy_assets"].nil? ? true : application_config["should_deploy_assets"]
+    shared_children.push assets_prefix
+  end
+
   namespace :deploy do
     namespace :assets do
       desc <<-DESC
@@ -70,6 +74,12 @@ Capistrano::Configuration.instance(:must_exist).load do
         if should_deploy_assets
           sudo "chown -R #{user}:#{application_user} #{shared_path}/#{assets_prefix}"
           sudo "chmod -R g+w #{shared_path}/#{assets_prefix}"
+          sudo <<-CMD.compact
+            rm -rf #{latest_release}/public/#{assets_prefix} &&
+            mkdir -p #{latest_release}/public &&
+            mkdir -p #{shared_path}/#{shared_assets_prefix} &&
+            ln -s #{shared_path}/#{shared_assets_prefix} #{latest_release}/public/#{assets_prefix}
+          CMD
           sudo "chown -R #{user}:#{application_user} #{latest_release}/public/#{assets_prefix}"
           sudo "chmod -R g+w #{latest_release}/public/#{assets_prefix}"
           rvmsudo "#{rake} assets:precompile", {:user => application_user, :path => latest_release, :env_vars => asset_env}
