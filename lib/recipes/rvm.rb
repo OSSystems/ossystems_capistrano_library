@@ -21,6 +21,11 @@ Capistrano::Configuration.instance(:must_exist).load do
     task :add_gpg_key do
       sudo "gpg2 --keyserver hkp://keys.gnupg.net --recv-keys #{fetch(:rvm_server_gpg_key)}", shell: "bash"
     end
+
+    desc 'Install bundler'
+    task :install_bundler do
+      run 'gem install bundler', rvm_shell: "#{fetch(:rvm_ruby_string_evaluated)}@global"
+    end
   end
 
   def rvmsudo(command, options={})
@@ -30,6 +35,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     run "rvm#{sudo} #{rvmsudo_user} bash -c 'cd #{path} && RAILS_ENV=#{rails_env} #{env_vars} bundle exec #{command}'"
   end
 
+  after 'rvm:install_ruby', 'rvm:install_bundler' # install bundler
   before 'rvm:install_rvm', 'rvm:add_gpg_key' # set rvm gpg key
   before 'deploy:setup', 'rvm:install_rvm'
   after 'rvm:install_rvm', 'rvm:close_sessions' # restart sessions to avoid permission bugs
